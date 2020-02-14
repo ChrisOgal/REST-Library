@@ -76,5 +76,8 @@ public class Book {
         this.publisher = publisher;
     }
     
+    public String toString(){
+        return "Book: " + Integer.toString(id) + "\ntitle: " + title + "\nISBN: " + isbn + "\ndescription: " + description + "\nAuthor: " + author.getFirstName() + " " + author.getLastName() + "\nPublisher: " + publisher.getName();
+    }
     
 }

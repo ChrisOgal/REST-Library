@@ -5,31 +5,45 @@
  */
 package com.christopheridah.soen487librarysystem;
 
-import com.christopheridah.soen487restentities.*;
+import com.christopheridah.soen487librarycore.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  *
  * @author chris
  */
+
 public class Library {
 
-    private List<Book> currentStock;
-    private int currentBookID = 0;
-    private final Object lock = new Object();
+    private static Library instance = null;
+    
+    private static HashMap<Integer, Book> currentStock;
+    private static int currentBookID = 0;
+   
 
     //CRUD
-    public Library() {
-        currentStock = new ArrayList<>();
-
+    private Library() {
+        currentStock = new HashMap<Integer, Book>();
     }
-
-    public Library(List<Book> currentStock) {
+       
+    public static Library getInstance(){
+        
+        if(instance == null){
+            instance = new Library();
+        }
+        
+        return instance;
+   
+    }
+    
+    private Library(HashMap<Integer,Book> currentStock) {
         this.currentStock = currentStock;
     }
-
-    public List<Book> listStock() {
+    
+    
+    public HashMap<Integer,Book> listStock() {
         return this.currentStock;
     }
     
@@ -37,20 +51,25 @@ public class Library {
     {
         currentStock.clear();
     }
-    public int addBook(String title, String description, String isbn, Author author, Publisher publisher) {
-        int bookID = 0;
+    
+    public int addBook(String title, String description, String isbn, String author, String publisher) {
+        
+        Author auth = new Author();
+        auth.setFirstName(author);
+        
+        Publisher publ = new Publisher();
+        publ.setName(publisher);
 
         if (!bookExists(isbn)) {
-            bookID = generateID();
+            currentBookID++;
+           
+            Book potentialBook = new Book(currentBookID, title, description, isbn, auth, publ);
 
-            if (bookID > 0) {
-                Book potentialBook = new Book(bookID, title, description, isbn, author, publisher);
-
-                currentStock.add(potentialBook);
-            }
+            currentStock.put(currentBookID, potentialBook);
+            
         }
 
-        return bookID;
+        return currentBookID;
     }
 
     public String getInfo(int bookID) {
@@ -72,86 +91,122 @@ public class Library {
 
         return info;
     }
-
-    public void updateBook(int bookID, String title, String description, String isbn, Author author, Publisher publisher) {
-
-        Book potentialBook = new Book(bookID, title, description, isbn, author, publisher);
-
-        synchronized (lock) {
-            if (bookExists(bookID)) {
-
-                currentStock.set(bookID, potentialBook);
-
-            }
+    
+    public String getStockAsString(){
+        String listStr = "";
+        
+        for(Book book: currentStock.values()){
+            listStr += book.toString() + "\n";
         }
+        
+        return listStr;
+    }
+
+    public String updateBook(int bookID, String title, String description, String isbn, String author, String publisher) {
+        
+        //To retrieve old values in case of null parameters
+        if (bookExists(bookID)) {
+            Book oldBook = currentStock.get(bookID);
+        
+            // Author and Publisher instances to create from the string params
+            Author auth;
+            Publisher publ;
+
+            if(title == null){
+                title = oldBook.getTitle();
+            }
+
+            if(description == null){
+                description = oldBook.getDescription();
+            }
+
+            if(isbn == null){
+                isbn = oldBook.getIsbn();
+            }
+
+            if(author == null){
+                auth = oldBook.getAuthor();
+            }
+            else {
+                auth = new Author();
+                auth.setFirstName(author);
+            }
+
+            if(publisher == null){
+                publ = oldBook.getPublisher();
+            }
+            else{
+                publ = new Publisher();
+                publ.setName(publisher);
+            }
+        
+        
+            Book potentialBook = new Book(bookID, title, description, isbn, auth, publ);
+
+            currentStock.put(bookID, potentialBook);
+            
+            return " updated book: " + Integer.toString(bookID);
+        }
+        
+        else return "book doesn't exist with id:" + Integer.toString(bookID);
 
     }
 
-    public void deleteBook(int bookID) {
+    public String deleteBook(int bookID) {
+        
+        if (bookExists(bookID)) {
 
-        synchronized (lock) {
-            if (bookExists(bookID)) {
-
-                currentStock.remove(bookID);
-            }
+            currentStock.remove(bookID);
+            return "deleted book " + Integer.toString(bookID);
         }
-
+            
+        else return "book " + Integer.toString(bookID) + " does not exist";    
+       
     }
 
     public void deleteBook(String isbn) {
         
-        synchronized (lock)
-        {
-            if (bookExists(isbn))
-            {
-                for (Book dirtyBook: currentStock)
-                {
-                    if (dirtyBook.getIsbn().equalsIgnoreCase(isbn))
-                    {
-                        currentStock.remove(dirtyBook);
-                        break;
-                    }
+        if (bookExists(isbn)) {
+            for (Book dirtyBook : currentStock.values()) {
+                if (dirtyBook.getIsbn().equalsIgnoreCase(isbn)) {
+                    currentStock.remove(dirtyBook.getId());
+                    break;
                 }
             }
         }
-    }
+     }
+    
 
-    private int generateID() {
-        int id = 0;
-
-        synchronized (lock) {
-
-            id += 1;
-
-            return id;
-        }
-
-    }
-
+    
     private boolean bookExists(int bookID) {
         boolean exists = false;
 
-        synchronized (lock) {
-            for (Book current : currentStock) {
-                if (bookID == current.getId()) {
-                    exists = true;
-                }
-            }
+        if (currentStock.containsKey(bookID)) {
+            exists = true;
         }
+
         return exists;
     }
 
     private boolean bookExists(String isbn) {
         boolean exists = false;
 
-        synchronized (lock) {
-            for (Book current : currentStock) {
-                if (current.getIsbn().equalsIgnoreCase(isbn)) {
-                    exists = true;
-                }
+        for (Book current : currentStock.values()) {
+            if (current.getIsbn().equalsIgnoreCase(isbn)) {
+                exists = true;
             }
         }
-
+    
         return exists;
+    }
+    
+    private int generateID(){
+        int id = currentBookID;
+        do{
+            id = currentBookID + 1;
+            
+        } while(currentStock.get(id) != null);
+        
+        return id;
     }
 }

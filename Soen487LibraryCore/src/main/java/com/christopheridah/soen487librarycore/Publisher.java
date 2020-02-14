@@ -38,6 +38,8 @@ public class Publisher {
         this.address = address;
     }
     
-    
+    public String toString(){
+        return name;
+    }
     
 }
