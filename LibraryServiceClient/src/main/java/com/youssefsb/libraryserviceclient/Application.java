@@ -49,9 +49,10 @@ public class Application {
         }
     }
     public void updateBookHandler(){
-        Scanner scanner = new Scanner(System.in);
+        Scanner intScanner = new Scanner(System.in);
+        Scanner scanner  = new Scanner(System.in);
         System.out.println("Book id?");
-        int id = scanner.nextInt();
+        int id = intScanner.nextInt();
         System.out.println("Edit book title ?");
         String title = scanner.nextLine();
         System.out.println("Edit ISBN ?");
@@ -93,7 +94,7 @@ public class Application {
         String author = scanner.nextLine();
         System.out.println("Publisher ?");
         String publisher = scanner.nextLine();
-        
+        System.out.println("publisher gathered : " + publisher + "author gathered : " + author);
         try{
             System.out.println(client.addBook(title, isbn, description,author,publisher));
         } catch(UniformInterfaceException e){
@@ -113,28 +114,32 @@ public class Application {
             System.out.println("Welcome to the Library Client!\n---------------------------------");
             System.out.println(mainMenu);
             Scanner firstMenuScanner = new Scanner(System.in);
-            int firstMenuChoice = firstMenuScanner.nextInt();
+            String firstMenuChoice = firstMenuScanner.nextLine();
+            //int firstMenuChoiceInt = Integer.parseInt(firstMenuChoice);
             switch (firstMenuChoice) {
-                case 1:
+                case "1":
                     helpHandler();
                     break;
-                case 2:
+                case "2":
                     listAllBooksHandler();
                     break;
-                case 3:
+                case "3":
                     displayBookHandler();
                     break;
-                case 4:
+                case "4":
                     addBookHandler();
                     break;
-                case 5:
+                case "5":
                     updateBookHandler();
                     break;
-                case 6:
+                case "6":
                     deleteBookHandler();
                     break;
-                case 7:
+                case "7":
                     quit = true;
+                    break;
+                default: 
+                    System.out.println("Invalid choice");
                     break;
             }
         }

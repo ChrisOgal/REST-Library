@@ -72,12 +72,11 @@ public class LibraryResource {
     public String addBook(@FormParam("title") String title,
                           @FormParam("description") String desc,
                           @FormParam("isbn") String isbn,
-                          @FormParam("Author") String author,
-                          @FormParam("Publisher") String publisher){
+                          @FormParam("author") String author,
+                          @FormParam("publisher") String publisher){
         
-        int bookID = library.addBook(title,desc,isbn,author,publisher);
+       return library.addBook(title,desc,isbn,author,publisher);
         
-        return "added book number: " + bookID + "\n";
     }
     
     /**
@@ -91,8 +90,8 @@ public class LibraryResource {
                           @QueryParam("title") String title,
                           @QueryParam("description") String desc,
                           @QueryParam("isbn") String isbn,
-                          @QueryParam("Author") String author,
-                          @QueryParam("Publisher") String publisher){
+                          @QueryParam("author") String author,
+                          @QueryParam("publisher") String publisher){
         
         return library.updateBook(id, title, desc, isbn, author, publisher);
         

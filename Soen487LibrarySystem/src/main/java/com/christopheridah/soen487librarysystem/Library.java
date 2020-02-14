@@ -52,24 +52,21 @@ public class Library {
         currentStock.clear();
     }
     
-    public int addBook(String title, String description, String isbn, String author, String publisher) {
+    public String addBook(String title, String description, String isbn, String author, String publisher) {
         
-        Author auth = new Author();
-        auth.setFirstName(author);
-        
-        Publisher publ = new Publisher();
-        publ.setName(publisher);
-
+               
         if (!bookExists(isbn)) {
             currentBookID++;
            
-            Book potentialBook = new Book(currentBookID, title, description, isbn, auth, publ);
+            Book potentialBook = new Book(currentBookID, title, description, isbn, author, publisher);
 
             currentStock.put(currentBookID, potentialBook);
             
+            return "added book number: " + Integer.toString(currentBookID) + "\n";
+
         }
 
-        return currentBookID;
+        else return "Book with same ISBN exists";
     }
 
     public String getInfo(int bookID) {
@@ -78,13 +75,7 @@ public class Library {
         if (bookExists(bookID)) {
 
             Book wanted = currentStock.get(bookID);
-            info = "ID: " + wanted.getId()
-                    + "\nTitle: " + wanted.getTitle()
-                    + "\nDescription: " + wanted.getDescription()
-                    + "\nISBN: " + wanted.getIsbn()
-                    + "\nAuthor: " + wanted.getAuthor().getFirstName() + wanted.getAuthor().getLastName()
-                    + "\nPublisher: " + wanted.getPublisher().getName()
-                    + "\nPublisher Address: " + wanted.getPublisher().getAddress();
+            info = wanted.toString();
         } else {
             info = "Book does not exist";
         }
@@ -112,36 +103,29 @@ public class Library {
             Author auth;
             Publisher publ;
 
-            if(title == null){
+            if(title == null || title.equals("")){
                 title = oldBook.getTitle();
             }
 
-            if(description == null){
+            if(description == null || description.equals("")){
                 description = oldBook.getDescription();
             }
 
-            if(isbn == null){
+            if(isbn == null || isbn.equals("")){
                 isbn = oldBook.getIsbn();
             }
 
-            if(author == null){
-                auth = oldBook.getAuthor();
+            if(author == null || author.equals("")){
+                author = oldBook.getAuthor().getFirstName();
             }
-            else {
-                auth = new Author();
-                auth.setFirstName(author);
-            }
+            
 
-            if(publisher == null){
-                publ = oldBook.getPublisher();
+            if(publisher == null || publisher.equals("")){
+                publisher = oldBook.getPublisher().getName();
             }
-            else{
-                publ = new Publisher();
-                publ.setName(publisher);
-            }
+            
         
-        
-            Book potentialBook = new Book(bookID, title, description, isbn, auth, publ);
+            Book potentialBook = new Book(bookID, title, description, isbn, author, publisher);
 
             currentStock.put(bookID, potentialBook);
             

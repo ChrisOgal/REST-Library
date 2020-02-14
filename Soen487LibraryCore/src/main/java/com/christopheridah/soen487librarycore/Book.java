@@ -27,6 +27,15 @@ public class Book {
         this.author = author;
         this.publisher = publisher;
     }
+    
+     public Book(int id, String title, String description, String isbn, String author, String publisher) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.isbn = isbn;
+        this.author = new Author(author , "");
+        this.publisher = new Publisher(publisher , "");
+    }
 
     public int getId() {
         return id;
@@ -77,7 +86,7 @@ public class Book {
     }
     
     public String toString(){
-        return "Book: " + Integer.toString(id) + "\ntitle: " + title + "\nISBN: " + isbn + "\ndescription: " + description + "\nAuthor: " + author.getFirstName() + " " + author.getLastName() + "\nPublisher: " + publisher.getName();
+        return "Book: " + Integer.toString(id) + "\ntitle: " + title + "\nISBN: " + isbn + "\ndescription: " + description + "\nAuthor: " + author.getFirstName() + "\nPublisher: " + publisher.getName();
     }
     
 }
