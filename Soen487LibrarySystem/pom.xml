@@ -7,8 +7,13 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
+            <groupId>javax.ejb</groupId>
+            <artifactId>javax.ejb-api</artifactId>
+            <version>3.2.2</version>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>Soen487RESTentities</artifactId>
+            <artifactId>Soen487LibraryCore</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
