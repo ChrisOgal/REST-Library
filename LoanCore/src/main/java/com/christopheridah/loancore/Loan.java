@@ -12,19 +12,21 @@ package com.christopheridah.loancore;
 public class Loan {
     
     private int id;
-    private Member borrower;
-    private String bookTitle, borrowDate, returnDate;
+    private int borrower;
+    private String bookID, borrowDate, returnDate;
+    boolean returned;
     
     public Loan () {
         
     }
 
-    public Loan(int id, Member borrower, String bookTitle, String borrowDate, String returnDate) {
+    public Loan(int id, int borrower, String bookID, String borrowDate, String returnDate) {
         this.id = id;
         this.borrower = borrower;
-        this.bookTitle = bookTitle;
+        this.bookID = bookID;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
+        this.returned = false;
     }
 
     public int getId() {
@@ -35,20 +37,20 @@ public class Loan {
         this.id = id;
     }
 
-    public Member getBorrower() {
+    public int getBorrower() {
         return borrower;
     }
 
-    public void setBorrower(Member borrower) {
+    public void setBorrower(int borrower) {
         this.borrower = borrower;
     }
 
-    public String getBookTitle() {
-        return bookTitle;
+    public String getBookID() {
+        return bookID;
     }
 
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
+    public void setBookID(String bookID) {
+        this.bookID = bookID;
     }
 
     public String getBorrowDate() {
@@ -65,6 +67,14 @@ public class Loan {
 
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public boolean isReturned() {
+        return returned;
+    }
+
+    public void setReturned(boolean returned) {
+        this.returned = returned;
     }
     
     
