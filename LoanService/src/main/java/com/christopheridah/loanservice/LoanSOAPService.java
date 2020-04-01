@@ -27,71 +27,99 @@ public class LoanSOAPService {
      * Web service operation
      */
     @WebMethod(operationName = "listAllMembers")
-    public String listAllMembers() {
+    public String listAllMembers() throws LoanSOAPFault {
 
-        return MemberManager.getInstance().getAllMembers();
+        try {
+            return MemberManager.getInstance().getAllMembers();
+        } catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "getMemberInfo")
-    public String getMemberInfo(@WebParam(name = "id") String id) {
+    public String getMemberInfo(@WebParam(name = "id") String id) throws LoanSOAPFault {
 
-        int memberID = Integer.parseInt(id);
+        try {
+            int memberID = Integer.parseInt(id);
+            return MemberManager.getInstance().getMemberInfo(memberID);
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
 
-        return MemberManager.getInstance().getMemberInfo(memberID);
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "addMember")
-    public String addMember(@WebParam(name = "name") String name, @WebParam(name = "email") String email) {
+    public String addMember(@WebParam(name = "name") String name, @WebParam(name = "email") String email) throws LoanSOAPFault {
 
-        int outcome = MemberManager.getInstance().addNewMember(name, email);
+        try {
+            int outcome = MemberManager.getInstance().addNewMember(name, email);
 
-        switch (outcome) {
-            case 0: {
-                return "Error encountered. Member not added";
-            }
+            switch (outcome) {
+                case 0: {
+                    return "Error encountered. Member not added";
+                }
 
-            default: {
-                return "Member added. Your ID is " + outcome;
+                default: {
+                    return "Member added. Your ID is " + outcome;
+                }
             }
         }
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "updateMember")
-    public String updateMember(@WebParam(name = "id") String id, @WebParam(name = "name") String name, @WebParam(name = "email") String email) {
+    public String updateMember(@WebParam(name = "id") String id, @WebParam(name = "name") String name, @WebParam(name = "email") String email) throws LoanSOAPFault {
 
-        int memberID = Integer.parseInt(id);
-        
+        try {
+            int memberID = Integer.parseInt(id);
 
-        return MemberManager.getInstance().updateMember(memberID, name, email) + getMemberInfo(id);
+            return MemberManager.getInstance().updateMember(memberID, name, email) + getMemberInfo(id);
+        }
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "deleteMember")
-    public String deleteMember(@WebParam(name = "id") String id) {
+    public String deleteMember(@WebParam(name = "id") String id) throws LoanSOAPFault {
 
-        int deleteID = Integer.parseInt(id);
+        try {
+            int deleteID = Integer.parseInt(id);
 
-        int outcome = MemberManager.getInstance().deleteMember(deleteID);
+            int outcome = MemberManager.getInstance().deleteMember(deleteID);
 
-        switch (outcome) {
-            case 0: {
-                return "Unable to delete member " + deleteID;
+            switch (outcome) {
+                case 0: {
+                    return "Unable to delete member " + deleteID;
+                }
+
+                default: {
+                    return "Member " + deleteID + " has been deleted";
+                }
             }
-
-            default: {
-                return "Member " + deleteID + " has been deleted";
-            }
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
         }
 
     }
@@ -100,46 +128,72 @@ public class LoanSOAPService {
      * Web service operation
      */
     @WebMethod(operationName = "listBookLoans")
-    public String listBookLoans(@WebParam(name = "bookID") String bookID) {
+    public String listBookLoans(@WebParam(name = "bookID") String bookID) throws LoanSOAPFault {
 
-        return LoanManager.getInstance().getBookLoans(bookID);
+        try {
+            return LoanManager.getInstance().getBookLoans(bookID);
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
     }
 
     /**
      * Web service operation
      */
-    @WebMethod(operationName = "listMemberLoans")
-    public String listMemberLoans(@WebParam(name = "memberID") String memberID) {
+    @WebMethod(operationName = "listMemberLoans") 
+    public String listMemberLoans(@WebParam(name = "memberID") String memberID) throws LoanSOAPFault {
 
-        return LoanManager.getInstance().getMemberLoans(Integer.parseInt(memberID));
+        try {
+            return LoanManager.getInstance().getMemberLoans(Integer.parseInt(memberID));
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "returnBook")
-    public String returnBook(@WebParam(name = "bookID") String bookID) {
+    public String returnBook(@WebParam(name = "bookID") String bookID) throws LoanSOAPFault {
 
-        LoanManager.getInstance().returnBook(bookID);
+        try {
+            LoanManager.getInstance().returnBook(bookID);
 
-        return "Book returned";
+            return "Book returned";
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "deleteLoan")
-    public String deleteLoan(@WebParam(name = "loanID") String loanID) {
+    public String deleteLoan(@WebParam(name = "loanID") String loanID) throws LoanSOAPFault {
 
-        int dirtyLoan = Integer.parseInt(loanID);
-        int outcome = LoanManager.getInstance().deleteLoan(dirtyLoan);
-        switch (outcome) {
-            case 0:
-                return "Unable to delete loan " + dirtyLoan + ".";
+        try {
+            int dirtyLoan = Integer.parseInt(loanID);
+            int outcome = LoanManager.getInstance().deleteLoan(dirtyLoan);
+            switch (outcome) {
+                case 0:
+                    return "Unable to delete loan " + dirtyLoan + ".";
 
-            default:
-                return "Loan " + dirtyLoan + " has been deleted";
+                default:
+                    return "Loan " + dirtyLoan + " has been deleted";
 
+            }
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
         }
 
     }
@@ -148,17 +202,24 @@ public class LoanSOAPService {
      * Web service operation
      */
     @WebMethod(operationName = "createLoan")
-    public String createLoan(@WebParam(name = "memberID") String memberID, @WebParam(name = "bookID") String bookID) {
+    public String createLoan(@WebParam(name = "memberID") String memberID, @WebParam(name = "bookID") String bookID) throws LoanSOAPFault {
 
-        int newLoan = LoanManager.getInstance().borrowBook(Integer.parseInt(memberID), bookID);
+        try {
+            int newLoan = LoanManager.getInstance().borrowBook(Integer.parseInt(memberID), bookID);
 
-        switch (newLoan) {
-            case 0:
-                return "Error. Loan not created.";
+            switch (newLoan) {
+                case 0:
+                    return "Error. Loan not created.";
 
-            default:
-                return "Loan " + newLoan + " has been created.";
+                default:
+                    return "Loan " + newLoan + " has been created.";
+            }
         }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
     /**
@@ -167,12 +228,19 @@ public class LoanSOAPService {
     @WebMethod(operationName = "updateLoan")
     public String updateLoan(@WebParam(name = "loanID") String loanID, @WebParam(name = "memberID") String memberID,
             @WebParam(name = "bookID") String bookID, @WebParam(name = "borrowDate") String borrowDate,
-            @WebParam(name = "returnDate") String returnDate, @WebParam(name = "returned") String returned) {
+            @WebParam(name = "returnDate") String returnDate, @WebParam(name = "returned") String returned) throws LoanSOAPFault {
 
-        LoanManager.getInstance().editLoan(Integer.parseInt(loanID), Integer.parseInt(memberID), bookID, LocalDate.parse(borrowDate),
-                LocalDate.parse(returnDate), Boolean.valueOf(returned));
+        try {
+            LoanManager.getInstance().editLoan(Integer.parseInt(loanID), Integer.parseInt(memberID), bookID, LocalDate.parse(borrowDate),
+                    LocalDate.parse(returnDate), Boolean.valueOf(returned));
 
-        return "Loan Updated.:\n" + LoanManager.getInstance().getLoan(Integer.parseInt(loanID));
+            return "Loan Updated.:\n" + LoanManager.getInstance().getLoan(Integer.parseInt(loanID));
+        }
+        
+        catch (LoanException e) {
+            throw new LoanSOAPFault("Operation not completed.\n", e);
+        }
+
     }
 
 }

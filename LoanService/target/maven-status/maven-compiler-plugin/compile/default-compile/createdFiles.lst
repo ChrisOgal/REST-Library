@@ -1,3 +1,4 @@
 com\christopheridah\loanservice\resources\JavaEE8Resource.class
+com\christopheridah\loanservice\LoanSOAPFault.class
 com\christopheridah\loanservice\JAXRSConfiguration.class
 com\christopheridah\loanservice\LoanSOAPService.class
