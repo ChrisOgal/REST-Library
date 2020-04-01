@@ -58,15 +58,108 @@ public class LoanTableGateway {
         return requestedLoan;
     }
 
-    public List<Loan> getAllLoans() {
-        List<Loan> loansList = new ArrayList<>();
+    public Loan getLoan(String id) throws SQLException {
 
-        return loansList;
+        Loan requestedLoan = new Loan();
+
+        if (loanExists(id)) {
+            String loanQuery = "select * from Loan where bookID = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(loanQuery)) {
+                ps.setString(1, id);
+
+                try (ResultSet rset = ps.executeQuery()) {
+                    rset.next();
+
+                    requestedLoan.setId(rset.getInt(1));
+                    requestedLoan.setBorrower(rset.getInt(2));
+                    requestedLoan.setBookID(rset.getString(3));
+                    requestedLoan.setBorrowDate(rset.getDate(4).toString());
+                    requestedLoan.setReturnDate(rset.getDate(5).toString());
+                    requestedLoan.setReturned(rset.getBoolean(6));
+                }
+            }
+        }
+        return requestedLoan;
+    }
+
+    public Loan getLoan(String id, boolean returned) throws SQLException {
+
+        Loan requestedLoan = new Loan();
+
+        if (loanExists(id)) {
+            String loanQuery = "select * from Loan where bookID = ? and returned = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(loanQuery)) {
+                ps.setString(1, id);
+                ps.setBoolean(2, returned);
+
+                try (ResultSet rset = ps.executeQuery()) {
+                    rset.next();
+
+                    requestedLoan.setId(rset.getInt(1));
+                    requestedLoan.setBorrower(rset.getInt(2));
+                    requestedLoan.setBookID(rset.getString(3));
+                    requestedLoan.setBorrowDate(rset.getDate(4).toString());
+                    requestedLoan.setReturnDate(rset.getDate(5).toString());
+                    requestedLoan.setReturned(rset.getBoolean(6));
+                }
+            }
+        }
+        return requestedLoan;
+    }
+
+    public List<Loan> getAllLoans() throws SQLException {
+
+        String query = "select * from Loan";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
+            try (ResultSet rset = ps.executeQuery()) {
+                return populateList(rset);
+            }
+        }
+
+    }
+
+    public List<Loan> getMemberLoans(int memberID) throws SQLException {
+
+        String query = "select * from Loan where memberID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, memberID);
+
+            try (ResultSet rset = ps.executeQuery()) {
+
+                return populateList(rset);
+
+            }
+        }
+
+    }
+
+    public List<Loan> getBookLoans(String bookID) throws SQLException {
+
+        String query = "select * from Loan where bookID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, bookID);
+
+            try (ResultSet rset = ps.executeQuery()) {
+                return populateList(rset);
+            }
+
+        }
+
     }
 
     public int borrowBook(int memberID, String bookID) throws LoanException, SQLException {
         int confirmedLoan = 0;
 
+        if (!checkAvailability(bookID)) {
+            throw new LoanException("Book is not available");
+        }
         if (!MemberManager.getInstance().memberExists(memberID)) {
             throw new LoanException("Member does not exist. Please register first.");
         } else {
@@ -84,7 +177,7 @@ public class LoanTableGateway {
                     ps.setInt(1, loanID);
                     ps.setInt(2, memberID);
                     ps.setString(3, bookID);
-                    ps.setDate(3, Date.valueOf(borrowDate));
+                    ps.setDate(4, Date.valueOf(borrowDate));
                     ps.setDate(5, Date.valueOf(returnDate));
                     ps.setBoolean(6, false);
 
@@ -95,6 +188,8 @@ public class LoanTableGateway {
 
                         try (PreparedStatement ps2 = conn.prepareStatement(confirmID)) {
                             try (ResultSet rset = ps2.executeQuery()) {
+
+                                rset.next();
                                 confirmedLoan = rset.getInt(1);
                             }
                         }
@@ -114,7 +209,7 @@ public class LoanTableGateway {
             cleanLoan.setReturned(returned);
 
             if (!dirtyLoan.equals(cleanLoan)) {
-                String updateLoan = "update Loan set memberID = ?, bookID = ?, borrowDate = ?, returnDate = ?, returned = ? where loanID = ?";
+                String updateLoan = "update Loan set memberID = ?, bookID = ?, borrowDate = ?, returnDate = ?, returned = ? where id = ?";
 
                 try (PreparedStatement ps = conn.prepareStatement(updateLoan)) {
                     ps.setInt(1, memberID);
@@ -133,71 +228,27 @@ public class LoanTableGateway {
 
     public void returnBook(String bookID) throws SQLException, LoanException {
 
-        String loanedQuery = "select COUNT(*) from Loan where bookID = ? and returned = ?";
-        
-        try (PreparedStatement ps = conn.prepareStatement(loanedQuery)){
-            
-            ps.setString(1, bookID);
-            ps.setBoolean(2, false);
-            
-            try (ResultSet rset = ps.executeQuery()) {
-                
-                int size = 0;
-                
-                if (rset.last())
-                {
-                    size = rset.getRow();
-                }
-                
-                switch (size)
-                {
-                    
-                    case 1:
-                    {
-                        rset.beforeFirst();
-                    
-                        rset.next();
-       
-                        editLoan(rset.getInt(1), rset.getInt(2), rset.getString(3), LocalDate.parse(rset.getDate(4).toString()), LocalDate.parse(rset.getDate(5).toString()), true);
-        
-                        break;
-                    }
-                    
-                    case 0:
-                    {
-                        throw new LoanException ("The book is not currently out.");
-                    }
-                    
-                    default:
-                    {
-                        throw new LoanException ("Error. " + size + " unreturned instances of this book have been found"); 
-                    }
-                }
-                
-            }
+        if (!checkAvailability(bookID)) {
+            Loan requestedLoan = getLoan(bookID, false);
+            editLoan(requestedLoan.getId(), requestedLoan.getBorrower(), bookID, LocalDate.parse(requestedLoan.getBorrowDate()), LocalDate.parse(requestedLoan.getReturnDate()), true);
         }
     }
 
     public int deleteLoan(int loanID) throws SQLException {
-        
-        if (loanExists(loanID))
-        {
+
+        if (loanExists(loanID)) {
             String deleteQuery = "delete from Loan where id = ?";
-            
-            try (PreparedStatement ps = conn.prepareStatement(deleteQuery)){
-                
+
+            try (PreparedStatement ps = conn.prepareStatement(deleteQuery)) {
+
                 ps.setInt(1, loanID);
-                
+
                 return ps.executeUpdate();
             }
-        }
-        
-        else 
-        {
+        } else {
             return loanID;
         }
     }
-
 
     public boolean loanExists(int id) throws SQLException {
 
@@ -205,6 +256,24 @@ public class LoanTableGateway {
 
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setInt(1, id);
+
+            try (ResultSet rset = ps.executeQuery()) {
+                rset.next();
+
+                if (rset.getInt(1) >= 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean loanExists(String id) throws SQLException {
+
+        String query = "select * from Loan where bookID = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, id);
 
             try (ResultSet rset = ps.executeQuery()) {
                 rset.next();
@@ -273,5 +342,44 @@ public class LoanTableGateway {
         }
 
         return duplicate;
+    }
+
+    private boolean checkAvailability(String bookID) throws SQLException {
+
+        String availableTest = "select COUNT(*) from Loan where bookID = ? and returned = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(availableTest)) {
+            ps.setString(1, bookID);
+            ps.setBoolean(2, false);
+
+            try (ResultSet rset = ps.executeQuery()) {
+                rset.next();
+
+                if (rset.getInt(1) >= 1) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private List<Loan> populateList(ResultSet rset) throws SQLException {
+        List<Loan> requestedList = new ArrayList<>();
+
+        while (rset.next()) {
+            Loan nextEntry = new Loan();
+
+            nextEntry.setId(rset.getInt(1));
+            nextEntry.setBorrower(rset.getInt(2));
+            nextEntry.setBookID(rset.getString(3));
+            nextEntry.setBorrowDate(rset.getDate(4).toString());
+            nextEntry.setReturnDate(rset.getDate(5).toString());
+            nextEntry.setReturned(rset.getBoolean(6));
+
+            requestedList.add(nextEntry);
+        }
+
+        return requestedList;
     }
 }

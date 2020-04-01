@@ -8,15 +8,15 @@
  * Created: Mar 23, 2020
  */
 
-DROP TABLE IF EXISTS Loan;
+
 
 CREATE TABLE Loan 
 (
-    loanID INT NOT NULL,
+    id INT NOT NULL,
     memberID INT,
     bookID VARCHAR(128),
     borrowDate Date,
     returnDate Date,
     returned BOOLEAN,
-    PRIMARY KEY (loanID)
+    PRIMARY KEY (id)
 );

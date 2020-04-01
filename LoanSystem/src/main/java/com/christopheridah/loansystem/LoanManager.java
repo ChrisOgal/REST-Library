@@ -7,9 +7,8 @@ package com.christopheridah.loansystem;
 
 import com.christopheridah.loancore.Loan;
 import com.christopheridah.loansystem.dataAccessLayer.LoanTableGateway;
-import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.List;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  *
@@ -20,12 +19,19 @@ public class LoanManager {
     private static LoanManager instance = null;
     private static final Object lock = new Object();
     private LoanTableGateway gateway;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
-    public LoanManager() throws SQLException {
-        gateway = new LoanTableGateway();
+    public LoanManager() {
+
+        try {
+            gateway = new LoanTableGateway();
+        } catch (Exception e) {
+            e.toString();
+        }
     }
 
-    public static LoanManager getInstance() throws SQLException {
+    public static LoanManager getInstance() {
+
         if (instance == null) {
             synchronized (lock) {
                 if (instance == null) {
@@ -33,38 +39,97 @@ public class LoanManager {
                 }
             }
         }
-
         return instance;
     }
 
-    public Loan getLoan(int id) throws SQLException {
-        return gateway.getLoan(id);
+    public Loan getLoan(int id) {
+
+        try {
+            return gateway.getLoan(id);
+        } catch (Exception e) {
+            e.toString();
+            return new Loan();
+        }
     }
 
-    public List<Loan> getAllLoans() {
-        return gateway.getAllLoans();
+    public String getAllLoans() {
+
+        try {
+            return objectMapper.writeValueAsString(gateway.getAllLoans());
+        } catch (Exception e) {
+            return e.toString();
+        }
     }
 
-    public int borrowBook(int memberID, String bookID) throws LoanException, SQLException {
-        return gateway.borrowBook(memberID, bookID);
+    public String getBookLoans(String bookID) {
+        try {
+            return objectMapper.writeValueAsString(gateway.getBookLoans(bookID));
+        } catch (Exception e) {
+            return e.toString();
+        }
+
     }
 
-    public void editLoan(int loanID, int memberID, String bookID, LocalDate borrowDate, LocalDate returnDate, boolean returned) throws SQLException {
+    public String getMemberLoans(int memberID) {
 
-        gateway.editLoan(loanID, memberID, bookID, borrowDate, returnDate, returned);
+        try {
+            return objectMapper.writeValueAsString(gateway.getMemberLoans(memberID));
+
+        } catch (Exception e) {
+            return e.toString();
+        }
     }
 
-    public void returnBook(String bookID) throws SQLException, LoanException {
-        gateway.returnBook(bookID);
+    public int borrowBook(int memberID, String bookID) {
+
+        try {
+            return gateway.borrowBook(memberID, bookID);
+        } catch (Exception e) {
+            
+            String reason = e.toString();
+            return -3;
+        }
+
     }
 
-    public int deleteLoan(int loanID) throws SQLException {
-       
-        return gateway.deleteLoan(loanID);
+    public void editLoan(int loanID, int memberID, String bookID, LocalDate borrowDate, LocalDate returnDate, boolean returned) {
+
+        try {
+            gateway.editLoan(loanID, memberID, bookID, borrowDate, returnDate, returned);
+        } catch (Exception e) {
+
+        }
+
     }
 
+    public void returnBook(String bookID) {
 
-    public boolean loanExists(int id) throws SQLException {
-        return gateway.loanExists(id);
+        try {
+            gateway.returnBook(bookID);
+        } catch (Exception e) {
+                
+            String reason = e.toString();
+            
+            String nothing = "";
+        }
+    }
+
+    public int deleteLoan(int loanID) {
+
+        try {
+            return gateway.deleteLoan(loanID);
+        } catch (Exception e) {
+            return -3;
+        }
+    }
+
+    public boolean loanExists(int id) {
+
+        try {
+            return gateway.loanExists(id);
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 }

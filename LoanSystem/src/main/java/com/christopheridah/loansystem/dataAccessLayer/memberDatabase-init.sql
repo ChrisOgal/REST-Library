@@ -13,5 +13,6 @@ CREATE TABLE Member
 (
     id INT,
     memberName VARCHAR(128),
+    memberEmail VARCHAR(128),
     PRIMARY KEY (id)
 );

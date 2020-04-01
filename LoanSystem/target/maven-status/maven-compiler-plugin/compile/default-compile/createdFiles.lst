@@ -1,5 +1,6 @@
 com\christopheridah\loansystem\dataAccessLayer\MemberTableGateway.class
 com\christopheridah\loansystem\LoanException.class
+com\christopheridah\loansystem\dataAccessLayer\LoanTableGateway$1.class
 com\christopheridah\loansystem\dataAccessLayer\LoanTableGateway.class
 com\christopheridah\loansystem\LoanManager.class
 com\christopheridah\loansystem\MemberManager.class
