@@ -6,6 +6,8 @@
 package com.youssefsb.libraryservice.resources;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -20,7 +22,15 @@ import javax.ws.rs.DELETE;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.MediaType;
 
+
+import java.sql.SQLException;
+
+import com.christopheridah.soen487librarysystem.Exceptions.*;
+
 import com.christopheridah.soen487librarysystem.Library;
+
+import com.christopheridah.soen487librarycore.* ;
+
 
 /**
  * REST Web Service
@@ -39,70 +49,122 @@ public class LibraryResource {
     /**
      * Creates a new instance of LibraryResource
      */
-    public LibraryResource() {
-        library = Library.getInstance();
+    public LibraryResource()  {
+   
+            library = Library.getInstance();
+     
     }
 
     /**
      * Retrieves representation of an instance of com.youssefsb.libraryservice.resources.GenericResource
      * @return an instance of java.lang.String
      */
-    @Path("bookById")
+    @Path("getBook")
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getBook(@QueryParam("ID") int id) {
+    @Produces({MediaType.APPLICATION_XML , MediaType.APPLICATION_JSON})
+    public Response getBook(@QueryParam("ID") int id) {
         
-        return library.getInfo(id);
-    
+        
+        try{
+            Book book = library.getBook(id); 
+            return Response.status(200)
+                .entity(book).build();
+        }catch(BookNotFoundException e){
+            return Response.status(404).entity("Book does not exist").build();
+        }catch (OtherDbException e){
+            return Response.status(500).entity("Internal error. Could not process request.").build();
+        }catch (FailedDbConnException e){
+            return Response.status(500).entity("Failed to connect to Database").build();
+        }
     }
+        //return Response.status(404).entity("Book does not exist").build();
+  
+  
     
+    /*
     @Path("allBooks")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String getBooksList() {
         
-        String str = library.getStockAsString();
+        //String str = library.getStockAsString();
         
-        return str;
-    }
+        //return str;
+    }*/
     
+    
+    
+    //public String addBook(@FormParam("title") String title,
+      //                    @FormParam("description") String desc,
+        //                  @FormParam("isbn") String isbn,
+          //                @FormParam("author") String author,
+            //              @FormParam("publisher") String publisher){
     @Path("addBook")
     @POST
-    @Produces(MediaType.TEXT_PLAIN)
-    public String addBook(@FormParam("title") String title,
-                          @FormParam("description") String desc,
-                          @FormParam("isbn") String isbn,
-                          @FormParam("author") String author,
-                          @FormParam("publisher") String publisher){
-        
-       return library.addBook(title,desc,isbn,author,publisher);
-        
-    }
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addBook(Book book){
+        try{
+            library.addBook(book);
+            return Response.status(200)
+                .entity(book).build();
+        }catch(InvalidPublisherException e){
+            return Response.status(400).entity("Invalid Publisher").build();
+        }catch(InvalidAuthorException e){
+            return Response.status(400).entity("Invalid Author").build();
+        }catch (OtherDbException e){
+            return Response.status(500).entity("Internal error. Could not process request.").build();
+        }catch (FailedDbConnException e){
+            return Response.status(500).entity("Failed to connect to Database").build();
+        }
     
+    }
     /**
      * POST method for updating or creating an instance of GenericResource
      * @param content representation for the resource
      */
+ 
     @Path("updateBook")
     @PUT
-    @Produces(MediaType.TEXT_PLAIN)
-    public String updateBook(@QueryParam("id") int id,
+    @Produces({MediaType.APPLICATION_XML , MediaType.APPLICATION_JSON})
+    public Response updateBook(@QueryParam("id") int id,
                           @QueryParam("title") String title,
                           @QueryParam("description") String desc,
                           @QueryParam("isbn") String isbn,
                           @QueryParam("author") String author,
                           @QueryParam("publisher") String publisher){
         
-        return library.updateBook(id, title, desc, isbn, author, publisher);
-        
+        Author auth = new Author(author , "lastName");
+        try{
+            library.updateBook(id, title, desc, isbn, auth, publisher);
+            return Response.status(400).entity("Invalid Publisher").build();
+        }catch(InvalidPublisherException e){
+            return Response.status(400).entity("Invalid Publisher").build();
+        }catch(InvalidAuthorException e){
+            return Response.status(400).entity("Invalid Author").build();
+        }catch (OtherDbException e){
+            return Response.status(500).entity("Internal error. Could not process request.").build();
+        }catch (FailedDbConnException e){
+            return Response.status(500).entity("Failed to connect to Database").build();
+        }
     }
+
+    
     
     @Path("deleteBook/{id}")
     @DELETE
-    @Produces(MediaType.TEXT_PLAIN)
-    public String deleteBook(@PathParam("id") int id){
-        return library.deleteBook(id);
+    @Produces({MediaType.APPLICATION_XML , MediaType.APPLICATION_JSON})
+    public Response deleteBook(@PathParam("id") int id){
+        try{
+            library.deleteBook(id);
+            return Response.status(500).entity("Deleted book succefully").build();
+        }catch(BookNotFoundException e){
+            return Response.status(500).entity("Book does not exist").build();
+        }catch (OtherDbException e){
+            return Response.status(500).entity("Internal error. Could not process request.").build();
+        }catch (FailedDbConnException e){
+            return Response.status(500).entity("Failed to connect to Database").build();
+        }
     }
-    
   
 }

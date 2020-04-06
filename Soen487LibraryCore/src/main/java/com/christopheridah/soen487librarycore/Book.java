@@ -5,10 +5,13 @@
  */
 package com.christopheridah.soen487librarycore;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author chris
  */
+@XmlRootElement
 public class Book {
     
     private int id;

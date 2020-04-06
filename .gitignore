@@ -3,3 +3,8 @@
 .project
 /LibraryService/target/
 /LibraryServiceClient/target/
+LibraryWBModel.mwb
+
+LibrarySchemas.sql
+
+LibraryWBModel.mwb.bak
