@@ -21,18 +21,18 @@ public class MemberManager {
     private MemberTableGateway gateway;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public MemberManager() {
+    public MemberManager() throws LoanException {
 
         try {
 
             gateway = new MemberTableGateway();
         } catch (Exception e) {
-            String reason = e.toString();
-            String fake = "";
+            
+            throw new LoanException("", e);
         }
     }
 
-    public static MemberManager getInstance() {
+    public static MemberManager getInstance() throws LoanException {
 
         if (instance == null) {
             synchronized (lock) {
@@ -46,77 +46,78 @@ public class MemberManager {
     }
 
     //CRUD on Member Data
-    public int addNewMember(String name, String email) {
+    public int addNewMember(String name, String email) throws LoanException {
         try {
 
             int result = gateway.addNewMember(name, email);
             return result;
         } catch (Exception e) {
-            return -4;
+           throw new LoanException("", e);
         }
 
     }
 
-    public String getMemberInfo(int id) {
+    public String getMemberInfo(int id) throws LoanException {
 
         try {
             Member requestedMember = gateway.getMemberInfo(id);
 
             return objectMapper.writeValueAsString(requestedMember);
         } catch (Exception e) {
-            return e.toString();
+            throw new LoanException("", e);
         }
 
     }
 
-    public String updateMember(int id, String name, String email) {
+    public String updateMember(int id, String name, String email) throws LoanException {
 
-        String update = "";
+        
         try {
 
             return gateway.updateMember(id, name, email);
         } catch (Exception e) {
-
+                    throw new LoanException("", e);
         }
 
-        return "Error updating";
+        
     }
 
-    public int deleteMember(int id) {
+    public int deleteMember(int id) throws LoanException {
 
         try {
             return gateway.deleteMember(id);
         } catch (Exception e) {
-            return -4;
+            throw new LoanException("", e);
         }
     }
 
-    public String getAllMembers() {
+    public String getAllMembers() throws LoanException {
         try {
 
             List<Member> membersList = gateway.getAllMembers();
             return objectMapper.writeValueAsString(membersList);
         } catch (Exception e) {
-            return e.toString();
+            
+            throw new LoanException("", e);
         }
 
     }
 
-    public int deleteAllMembers() {
+    public int deleteAllMembers() throws LoanException {
 
         try {
             return gateway.deleteAllMembers();
         } catch (Exception e) {
-            return -4;
+           throw new LoanException("", e);
         }
     }
 
-    public boolean memberExists(int id) {
+    public boolean memberExists(int id) throws LoanException {
 
         try {
             return gateway.memberExists(id);
         } catch (Exception e) {
-            return false;
+           throw new LoanException("", e);
         }
     }
 

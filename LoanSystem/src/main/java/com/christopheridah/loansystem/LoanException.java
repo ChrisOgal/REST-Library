@@ -14,10 +14,15 @@ public class LoanException extends Exception {
     public LoanException () {
         
     }
-    
-    public LoanException (String message) {
-        
-        super (message);
+
+    public LoanException(String message) {
+        super(message);
     }
+
+    public LoanException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+    
     
 }

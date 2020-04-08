@@ -21,16 +21,16 @@ public class LoanManager {
     private LoanTableGateway gateway;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public LoanManager() {
+    public LoanManager() throws LoanException {
 
         try {
             gateway = new LoanTableGateway();
         } catch (Exception e) {
-            e.toString();
+           throw new LoanException("", e);
         }
     }
 
-    public static LoanManager getInstance() {
+    public static LoanManager getInstance() throws LoanException {
 
         if (instance == null) {
             synchronized (lock) {
@@ -42,93 +42,89 @@ public class LoanManager {
         return instance;
     }
 
-    public Loan getLoan(int id) {
+    public Loan getLoan(int id) throws LoanException {
 
         try {
             return gateway.getLoan(id);
         } catch (Exception e) {
-            e.toString();
-            return new Loan();
+            throw new LoanException("", e);
         }
     }
 
-    public String getAllLoans() {
+    public String getAllLoans() throws LoanException {
 
         try {
             return objectMapper.writeValueAsString(gateway.getAllLoans());
         } catch (Exception e) {
-            return e.toString();
+            throw new LoanException("", e);
         }
     }
 
-    public String getBookLoans(String bookID) {
+    public String getBookLoans(String bookID) throws LoanException {
         try {
             return objectMapper.writeValueAsString(gateway.getBookLoans(bookID));
         } catch (Exception e) {
-            return e.toString();
+            throw new LoanException("", e);
         }
 
     }
 
-    public String getMemberLoans(int memberID) {
+    public String getMemberLoans(int memberID) throws LoanException {
 
         try {
             return objectMapper.writeValueAsString(gateway.getMemberLoans(memberID));
 
         } catch (Exception e) {
-            return e.toString();
+            throw new LoanException("", e);
         }
     }
 
-    public int borrowBook(int memberID, String bookID) {
+    public int borrowBook(int memberID, String bookID) throws LoanException {
 
         try {
             return gateway.borrowBook(memberID, bookID);
         } catch (Exception e) {
             
-            String reason = e.toString();
-            return -3;
+            throw new LoanException("", e);
         }
 
     }
 
-    public void editLoan(int loanID, int memberID, String bookID, LocalDate borrowDate, LocalDate returnDate, boolean returned) {
+    public void editLoan(int loanID, int memberID, String bookID, LocalDate borrowDate, LocalDate returnDate, boolean returned) throws LoanException {
 
         try {
             gateway.editLoan(loanID, memberID, bookID, borrowDate, returnDate, returned);
         } catch (Exception e) {
-
+throw new LoanException("", e);
         }
 
     }
 
-    public void returnBook(String bookID) {
+    public void returnBook(String bookID) throws LoanException {
 
         try {
             gateway.returnBook(bookID);
         } catch (Exception e) {
                 
-            String reason = e.toString();
-            
-            String nothing = "";
+            throw new LoanException("", e);
         }
     }
 
-    public int deleteLoan(int loanID) {
+    public int deleteLoan(int loanID) throws LoanException {
 
         try {
             return gateway.deleteLoan(loanID);
         } catch (Exception e) {
-            return -3;
+            throw new LoanException("", e);
         }
     }
 
-    public boolean loanExists(int id) {
+    public boolean loanExists(int id) throws LoanException {
 
         try {
             return gateway.loanExists(id);
         } catch (Exception e) {
-            return false;
+            throw new LoanException("", e);
         }
 
     }
