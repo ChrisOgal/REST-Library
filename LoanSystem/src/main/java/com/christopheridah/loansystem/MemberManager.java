@@ -28,7 +28,9 @@ public class MemberManager {
             gateway = new MemberTableGateway();
         } catch (Exception e) {
             
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -52,7 +54,8 @@ public class MemberManager {
             int result = gateway.addNewMember(name, email);
             return result;
         } catch (Exception e) {
-           throw new LoanException("", e);
+
+           throw new LoanException(e.getMessage(), e);
         }
 
     }
@@ -64,7 +67,9 @@ public class MemberManager {
 
             return objectMapper.writeValueAsString(requestedMember);
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
 
     }
@@ -76,7 +81,9 @@ public class MemberManager {
 
             return gateway.updateMember(id, name, email);
         } catch (Exception e) {
-                    throw new LoanException("", e);
+
+                    throw new LoanException(e.getMessage(), e);
+
         }
 
         
@@ -87,7 +94,9 @@ public class MemberManager {
         try {
             return gateway.deleteMember(id);
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -98,7 +107,9 @@ public class MemberManager {
             return objectMapper.writeValueAsString(membersList);
         } catch (Exception e) {
             
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
 
     }
@@ -108,7 +119,9 @@ public class MemberManager {
         try {
             return gateway.deleteAllMembers();
         } catch (Exception e) {
-           throw new LoanException("", e);
+
+           throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -117,7 +130,9 @@ public class MemberManager {
         try {
             return gateway.memberExists(id);
         } catch (Exception e) {
-           throw new LoanException("", e);
+
+           throw new LoanException(e.getMessage(), e);
+
         }
     }
 

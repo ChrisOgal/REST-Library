@@ -1,1 +1,7 @@
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Exceptions/FailedDbConnException.java
 /home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Library.java
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Exceptions/InvalidAuthorException.java
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Exceptions/BookNotFoundException.java
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/LibraryDataAccessLayer/BookDataGateway.java
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Exceptions/InvalidPublisherException.java
+/home/youssefsb/NetBeansProjects/REST-Library/Soen487LibrarySystem/src/main/java/com/christopheridah/soen487librarysystem/Exceptions/OtherDbException.java

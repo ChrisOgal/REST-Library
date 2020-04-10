@@ -1,1 +1,7 @@
+com/christopheridah/LibraryDataAccessLayer/BookDataGateway.class
+com/christopheridah/soen487librarysystem/Exceptions/BookNotFoundException.class
+com/christopheridah/soen487librarysystem/Exceptions/OtherDbException.class
+com/christopheridah/soen487librarysystem/Exceptions/InvalidPublisherException.class
+com/christopheridah/soen487librarysystem/Exceptions/InvalidAuthorException.class
+com/christopheridah/soen487librarysystem/Exceptions/FailedDbConnException.class
 com/christopheridah/soen487librarysystem/Library.class

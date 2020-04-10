@@ -21,13 +21,22 @@ import java.util.List;
  */
 public class MemberTableGateway {
 
-    private static String databaseURL = "jdbc:derby://localhost:1527/Library";
+    //private static String databaseURL = "jdbc:derby://localhost:1527/Library";
+    private static String databaseURL = "jdbc:mysql://root:password@localhost:3306/Library?serverTimezone=UTC";
     private static Connection conn;
     private static final Object lock = new Object();
 
-    public MemberTableGateway() throws SQLException, ClassNotFoundException, InstantiationException {
-
+    public MemberTableGateway() throws SQLException{
+        try {
+        Class.forName("com.mysql.jdbc.Driver");
+        System.out.println("Driver loaded!");
+        } catch (ClassNotFoundException e) {
+            System.out.println("error loading driver");
+            //throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+        }
+        
         conn = DriverManager.getConnection(databaseURL);
+        System.out.println("Connection established");
     }
 
     public int addNewMember(String name, String email) throws SQLException, LoanException {
@@ -174,18 +183,15 @@ public class MemberTableGateway {
 
         String query = "select * from Member where id = ?";
 
-        try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, id);
+        PreparedStatement ps = conn.prepareStatement(query);
+        ps.setInt(1, id);
+        ResultSet rset = ps.executeQuery();
+        if(rset.next()){
+            return true;
+        }else{
+            return false;   
+        } 
 
-            try (ResultSet rset = ps.executeQuery()) {
-                rset.next();
-
-                if (rset.getInt(1) >= 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private int checkDuplicateId(int id) throws SQLException {

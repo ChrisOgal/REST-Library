@@ -32,7 +32,9 @@ public class LoanSOAPService {
         try {
             return MemberManager.getInstance().getAllMembers();
         } catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
 
     }
@@ -49,7 +51,9 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
 
     }
@@ -59,6 +63,10 @@ public class LoanSOAPService {
      */
     @WebMethod(operationName = "addMember")
     public String addMember(@WebParam(name = "name") String name, @WebParam(name = "email") String email) throws LoanSOAPFault {
+
+        
+        System.out.println("here");
+        
 
         try {
             int outcome = MemberManager.getInstance().addNewMember(name, email);
@@ -74,7 +82,9 @@ public class LoanSOAPService {
             }
         }
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
 
     }
@@ -91,7 +101,9 @@ public class LoanSOAPService {
             return MemberManager.getInstance().updateMember(memberID, name, email) + getMemberInfo(id);
         }
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
 
     }
@@ -119,7 +131,8 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
         }
 
     }
@@ -135,7 +148,9 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
     }
 
@@ -150,7 +165,8 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
         }
 
     }
@@ -168,7 +184,9 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
+
         }
 
     }
@@ -193,7 +211,8 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
         }
 
     }
@@ -217,7 +236,8 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
         }
 
     }
@@ -238,7 +258,8 @@ public class LoanSOAPService {
         }
         
         catch (LoanException e) {
-            throw new LoanSOAPFault("Operation not completed.\n", e);
+
+            throw new LoanSOAPFault(e.getMessage(), e);
         }
 
     }

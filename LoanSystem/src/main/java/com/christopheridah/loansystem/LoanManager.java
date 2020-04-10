@@ -26,7 +26,9 @@ public class LoanManager {
         try {
             gateway = new LoanTableGateway();
         } catch (Exception e) {
-           throw new LoanException("", e);
+
+           throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -47,7 +49,9 @@ public class LoanManager {
         try {
             return gateway.getLoan(id);
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -56,7 +60,9 @@ public class LoanManager {
         try {
             return objectMapper.writeValueAsString(gateway.getAllLoans());
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -64,7 +70,9 @@ public class LoanManager {
         try {
             return objectMapper.writeValueAsString(gateway.getBookLoans(bookID));
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
 
     }
@@ -75,7 +83,9 @@ public class LoanManager {
             return objectMapper.writeValueAsString(gateway.getMemberLoans(memberID));
 
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -85,7 +95,9 @@ public class LoanManager {
             return gateway.borrowBook(memberID, bookID);
         } catch (Exception e) {
             
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
 
     }
@@ -95,7 +107,9 @@ public class LoanManager {
         try {
             gateway.editLoan(loanID, memberID, bookID, borrowDate, returnDate, returned);
         } catch (Exception e) {
-throw new LoanException("", e);
+
+throw new LoanException(e.getMessage(), e);
+
         }
 
     }
@@ -106,7 +120,9 @@ throw new LoanException("", e);
             gateway.returnBook(bookID);
         } catch (Exception e) {
                 
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -115,7 +131,9 @@ throw new LoanException("", e);
         try {
             return gateway.deleteLoan(loanID);
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
+
         }
     }
 
@@ -124,7 +142,8 @@ throw new LoanException("", e);
         try {
             return gateway.loanExists(id);
         } catch (Exception e) {
-            throw new LoanException("", e);
+
+            throw new LoanException(e.getMessage(), e);
         }
 
     }

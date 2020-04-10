@@ -26,12 +26,26 @@ import java.util.List;
  */
 public class LoanTableGateway {
 
-    private static final String databaseURL = "jdbc:derby://localhost:1527/Library";
+
+    //private static final String databaseURL = "jdbc:derby://localhost:1527/Library";
+    private static final String databaseURL = "jdbc:mysql://root:password@localhost:3306/Library?serverTimezone=UTC";
+
     private static final Object lock = new Object();
     private static Connection conn;
 
     public LoanTableGateway() throws SQLException {
+
+        try {
+        Class.forName("com.mysql.jdbc.Driver");
+        System.out.println("Driver loaded!");
+        } catch (ClassNotFoundException e) {
+            //throw new IllegalStateException("Cannot find the driver in the classpath!", e);
+            System.out.println("Failed to load driver");
+        }
+        
         conn = DriverManager.getConnection(databaseURL);
+        System.out.println("Connection established");
+
     }
 
     public Loan getLoan(int id) throws SQLException {
