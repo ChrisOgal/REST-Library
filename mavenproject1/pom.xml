@@ -10,6 +10,9 @@
         <module>../Soen487LibraryCore</module>
         <module>../Soen487LibrarySystem</module>
         <module>../LibraryServiceClient</module>
+        <module>../LoanSystem</module>
+        <module>../LoanCore</module>
+        <module>../LoanService</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

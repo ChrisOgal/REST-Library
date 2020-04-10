@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?><definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://loanservice.christopheridah.com/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://loanservice.christopheridah.com/" name="LoanSOAPService">
+<types>
+<xsd:schema>
+<xsd:import namespace="http://loanservice.christopheridah.com/" schemaLocation="LoanSOAPServicexsd.xsd"/>
+</xsd:schema>
+</types>
+<message name="deleteMember">
+<part name="id" type="xsd:string"/>
+</message>
+<message name="deleteMemberResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="LoanSOAPFault">
+<part name="fault" element="tns:LoanSOAPFault"/>
+</message>
+<message name="listMemberLoans">
+<part name="memberID" type="xsd:string"/>
+</message>
+<message name="listMemberLoansResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="updateLoan">
+<part name="loanID" type="xsd:string"/>
+<part name="memberID" type="xsd:string"/>
+<part name="bookID" type="xsd:string"/>
+<part name="borrowDate" type="xsd:string"/>
+<part name="returnDate" type="xsd:string"/>
+<part name="returned" type="xsd:string"/>
+</message>
+<message name="updateLoanResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="createLoan">
+<part name="memberID" type="xsd:string"/>
+<part name="bookID" type="xsd:string"/>
+</message>
+<message name="createLoanResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="listAllMembers"/>
+<message name="listAllMembersResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="addMember">
+<part name="name" type="xsd:string"/>
+<part name="email" type="xsd:string"/>
+</message>
+<message name="addMemberResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="getMemberInfo">
+<part name="id" type="xsd:string"/>
+</message>
+<message name="getMemberInfoResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="deleteLoan">
+<part name="loanID" type="xsd:string"/>
+</message>
+<message name="deleteLoanResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="updateMember">
+<part name="id" type="xsd:string"/>
+<part name="name" type="xsd:string"/>
+<part name="email" type="xsd:string"/>
+</message>
+<message name="updateMemberResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="returnBook">
+<part name="bookID" type="xsd:string"/>
+</message>
+<message name="returnBookResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<message name="listBookLoans">
+<part name="bookID" type="xsd:string"/>
+</message>
+<message name="listBookLoansResponse">
+<part name="return" type="xsd:string"/>
+</message>
+<portType name="LoanSOAPService">
+<operation name="deleteMember">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteMemberRequest" message="tns:deleteMember"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteMemberResponse" message="tns:deleteMemberResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteMember/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="listMemberLoans">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listMemberLoansRequest" message="tns:listMemberLoans"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listMemberLoansResponse" message="tns:listMemberLoansResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listMemberLoans/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="updateLoan" parameterOrder="loanID memberID bookID borrowDate returnDate returned">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateLoanRequest" message="tns:updateLoan"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateLoanResponse" message="tns:updateLoanResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateLoan/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="createLoan" parameterOrder="memberID bookID">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/createLoanRequest" message="tns:createLoan"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/createLoanResponse" message="tns:createLoanResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/createLoan/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="listAllMembers">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listAllMembersRequest" message="tns:listAllMembers"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listAllMembersResponse" message="tns:listAllMembersResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listAllMembers/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="addMember" parameterOrder="name email">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/addMemberRequest" message="tns:addMember"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/addMemberResponse" message="tns:addMemberResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/addMember/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="getMemberInfo">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/getMemberInfoRequest" message="tns:getMemberInfo"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/getMemberInfoResponse" message="tns:getMemberInfoResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/getMemberInfo/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="deleteLoan">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteLoanRequest" message="tns:deleteLoan"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteLoanResponse" message="tns:deleteLoanResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/deleteLoan/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="updateMember" parameterOrder="id name email">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateMemberRequest" message="tns:updateMember"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateMemberResponse" message="tns:updateMemberResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/updateMember/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="returnBook">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/returnBookRequest" message="tns:returnBook"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/returnBookResponse" message="tns:returnBookResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/returnBook/Fault/LoanSOAPFault"/>
+</operation>
+<operation name="listBookLoans">
+<input wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listBookLoansRequest" message="tns:listBookLoans"/>
+<output wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listBookLoansResponse" message="tns:listBookLoansResponse"/>
+<fault message="tns:LoanSOAPFault" name="LoanSOAPFault" wsam:Action="http://loanservice.christopheridah.com/LoanSOAPService/listBookLoans/Fault/LoanSOAPFault"/>
+</operation>
+</portType>
+<binding name="LoanSOAPServicePortBinding" type="tns:LoanSOAPService">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc"/>
+<operation name="deleteMember">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="listMemberLoans">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="updateLoan">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="createLoan">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="listAllMembers">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="addMember">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="getMemberInfo">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="deleteLoan">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="updateMember">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="returnBook">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+<operation name="listBookLoans">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</input>
+<output>
+<soap:body use="literal" namespace="http://loanservice.christopheridah.com/"/>
+</output>
+<fault name="LoanSOAPFault">
+<soap:fault name="LoanSOAPFault" use="literal"/>
+</fault>
+</operation>
+</binding>
+<service name="LoanSOAPService">
+<port name="LoanSOAPServicePort" binding="tns:LoanSOAPServicePortBinding">
+<soap:address location="http://localhost:8080/LoanSOAPService/LoanSOAPService"/>
+</port>
+</service>
+</definitions>

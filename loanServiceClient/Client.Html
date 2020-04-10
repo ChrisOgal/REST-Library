@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Book Library Admin System 
+	</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="jquery.soap.js"></script>
+	<script type="text/javascript">
+		
+		function submitSOAPForm(formId){
+			console.log("submitting form " + formId)
+			formNode = document.getElementById(formId);
+			
+			var data = new Object();
+			elements = formNode.getElementsByTagName("input")
+			for(i =0; i < elements.length; i++) 
+				{	
+					data[elements[i].getAttribute('name')] = elements[i].value	
+				}
+			
+			resultTxtTag = formId + "Res"
+			
+			console.log("Making request: { \n operationName = " + formId + "}")
+
+			sendSOAPRequest(formNode.getAttribute("name"),data, resultTxtTag)
+
+			return false;
+
+		}
+
+		function sendSOAPRequest(operationName ,data , resultBoxTag) {
+
+			
+			var url='http://localhost:3000/SOAP?opName=' +operationName +"&" ;
+
+			for(var key in data) {
+			  	url += key + "=" + data[key]+"&"
+			}
+			
+			url = url.substring(0, url.length - 1);
+			console.log("Making request: GET  " + url)
+			
+  			$.ajax({url: url, 
+  				success: function(result){
+  					console.log('success');
+    				$("#" + resultBoxTag).html(result);
+  				}, 
+  				crossDomain : 'True',
+  				contentType : "text/plain",
+  				error: function(err){
+  					console.log("error");
+  				},
+  			
+  			});
+
+		}
+
+		
+
+		function submitRESTForm(webMethodPath,formId, httpMethod, sendQueryParams, sendJson, sendXML){
+				var data = new Object();
+				var url="http://localhost:8080/LibraryService-1.0/Library/" + webMethodPath ;
+				if(sendJson){
+					formNode = document.getElementById(formId);
+					elements = formNode.getElementsByTagName("input")
+					for(i =0; i < elements.length; i++){	
+						data[elements[i].getAttribute('name')] = elements[i].value	
+					}
+				
+					$.ajax({url: url, 
+		  				success: function(result){
+		  					console.log('success');
+		    				$("#" + formId+"Res").html(result);
+		  				}, 
+		  				data: JSON.Stringify(data), 
+		  				crossDomain : 'True',
+		  				contentType : "application/json",
+		  				error: function(err){
+		  					console.log("error");
+		  				},
+					})
+				}
+		}
+
+		function addbook(){
+			var bookJson = '{"id": "","title": "","description": "","isbn": "","author": {"firstName": "","lastName": ""},"publisher": {"name": "","address": ""}}'
+			book = JSON.parse(bookJson);
+			console.log(book);
+			var addBookForm = document.getElementById("addBookForm");
+
+			book.id = null;
+			book.title = addBookForm.querySelector("#title").value;
+			book.description = addBookForm.querySelector("#description").value;
+			book.isbn = addBookForm.querySelector("#isbn").value;
+			book.author.firstName = addBookForm.querySelector("#authorFirstName").value;
+			book.author.lastName = addBookForm.querySelector("#authorLastName").value;
+			book.publisher.name = addBookForm.querySelector("#publisherName").value;
+			book.publisher.address = addBookForm.querySelector("#publisherAddress").value;
+
+			$.ajax({url: "http://localhost:8080/LibraryService-1.0/Library/addBook", 
+		  				success: function(result){
+		  					console.log('success');
+		    				$("#addBookRes").html(result);
+		  				}, 
+		  				type: 'POST',
+		  				data: JSON.stringify(book), 
+		  				crossDomain : 'True',
+		  				contentType : "application/json",
+		  				error: function(err){
+		  					console.log("error");
+		  				},
+					})
+		}
+		
+		
+	</script>
+</head>
+<body>
+	<div>
+		Add Member:	
+
+
+		<form id="addMember" name="addMember" onsubmit="submitSOAPForm('addMember')">
+		  <label for="name">Member name:</label>
+		  <input type="text" id="mmeberName" name="name"><br><br>
+		  <label for="name">Member Email:</label>
+		  <input type="text" id="memberEmail" name="email"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('addMember')">Submit</button>
+		</form>
+		<p id="addMemberRes">
+	</p>
+	</div>
+	
+	<div>		
+		Create Loan:
+
+
+		<form id="createLoan" name="createLoan" onsubmit="submitSOAPForm('createLoan')">
+		  <label for="memberID">Member ID:</label>
+		  <input type="text" id="memberID" name="memberID"><br><br>
+		  <label for="bookID">Book Id:</label>
+		  <input type="text" id="bookID" name="bookID"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('createLoan')">Submit</button>
+		</form>
+		<p id="createLoanRes">
+	</p>
+	</div>
+	
+	<div>	
+		Delete Loan:	
+
+
+		<form id="deleteLoan" name="deleteLoan" onsubmit="submitSOAPForm('deleteLoan')">
+		  <label for="loanID">Loan ID:</label>
+		  <input type="text" id="loanID" name="loanID"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('deleteLoan')">Submit</button>
+		</form>
+		<p id="deleteLoanRes">
+	</p>
+	</div>
+
+	<div>		
+		Delete Member:
+
+
+		<form id="deleteMember" name="deleteMember" onsubmit="submitSOAPForm('deleteMember')">
+		  <label for="memberID">member ID:</label>
+		  <input type="text" id="memberID" name="id"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('deleteMember')">Submit</button>
+		</form>
+		<p id="deleteMemberRes">
+		</p>
+	</div>
+
+	<div>	
+		Get Member Info:	
+
+
+		<form id="getMemberInfo" name="getMemberInfo" onsubmit="submitSOAPForm('getMemberInfo')">
+		  <label for="memberID">member ID:</label>
+		  <input type="text" id="memberID" name="id"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('getMemberInfo')">Submit</button>
+		</form>
+		<p id="getMemberInfoRes">
+		</p>
+	</div>
+
+	<div>	
+		List All Members:
+
+
+		<form id="listAllMembers" name="listAllMembers" onsubmit="submitSOAPForm('listAllMembers')">
+		  <button type = "button" onclick="submitSOAPForm('listAllMembers')">List all members</button>
+		</form>
+		<p id="listAllMembersRes">
+		</p>
+	</div>
+
+	<div>		
+		List Book Loans:
+
+
+		<form id="listBookLoans" name="listBookLoans" onsubmit="submitSOAPForm('listBookLoans')">
+			<label for="bookID">Book ID:</label>
+		  	<input type="text" id="bookID" name="bookID"><br><br>
+		  	<button type = "button" onclick="submitSOAPForm('listBookLoans')">List all Book Loans</button>
+		</form>
+		<p id="listBookLoansRes">
+		</p>
+	</div>
+
+	<div>		
+		List Member Loans:
+		<form id="listMemberLoans" name="listMemberLoans" onsubmit="submitSOAPForm('listMemberLoans')">
+			<label for="memberID">Member ID:</label>
+		  	<input type="text" id="memberID" name="memberID"><br><br>
+		  	<button type = "button" onclick="submitSOAPForm('listMemberLoans')">List all Memebr Loans</button>
+		</form>
+		<p id="listMemberLoansRes">
+		</p>
+	</div>
+
+	<div>	
+	Return Book:	
+		<form id="returnBook" name="returnBook" onsubmit="submitSOAPForm('returnBook')">
+			<label for="bookID">Book ID:</label>
+		  	<input type="text" id="bookID" name="bookID"><br><br>
+		  	<button type = "button" onclick="submitSOAPForm('returnBook')">Return Book</button>
+		</form>
+		<p id="returnBookRes">
+		</p>
+	</div>
+
+	<div>	
+	Update Loan:	
+		<form id="updateLoan" name="updateLoan" onsubmit="submitSOAPForm('updateLoan')">
+			<label for="bookID">Loan ID:</label>
+		  	<input type="text" id="loanID" name="loanID"><br>
+		  	<label >Member ID:</label>
+		  	<input type="text" id="memberID" name="memberID"><br>
+		  	<label >Book ID:</label>
+		  	<input type="text" id="bookID" name="bookID"><br><br>
+		  	<label >Borrow Date:</label>
+		  	<input type="date" id="borrowDate" name="borrowDate"><br><br>
+		  	<label >Return Date:</label>		  	
+		  	<input type="date" id="returnDate" name="returnDate"><br><br>
+		  	<label >Returned:</label>
+		  	<input type="text" id="returned" name="returned"><br><br>
+		  	<button type = "button" onclick="submitSOAPForm('updateLoan')"> Update Loan</button>
+		</form>
+		<p id="updateLoanRes">
+		</p>
+	</div>
+
+	<div>		
+		Update Member:
+
+
+		<form id="updateMember" name="updateMember" onsubmit="submitSOAPForm('updateMember')">
+		  <label for="memberID">Member ID:</label>
+		  <input type="text" id="memberID" name="id"><br><br>
+		  <label for="memberName">Member Name:</label>
+		  <input type="text" id="memberName" name="email"><br><br>
+		  <label for="memberName">Member Email:</label>
+		  <input type="text" id="memberName" name="name"><br><br>
+		  <button type = "button" onclick="submitSOAPForm('updateMember')">Submit</button>
+		</form>
+		<p id="updateMemberRes">
+	</p>
+	</div><br><br><br>
+	<header>
+		REST:
+	</header>
+	<br><br><br>
+	<div>	
+	Add Book:	
+		<form id="addBookForm" name="addBookForm" >
+		  	<label >Title:</label>
+		  	<input type="text" id="title" name="title"><br>
+		  	<label >Description:</label>
+		  	<input type="text" id="description"><br><br>
+		  	<label >isbn:</label>
+		  	<input type="text" id="isbn"><br><br>
+		  	<label >Author First Name:</label>
+		  	<input type="text" id="authorFirstName"><br><br>
+		  	<label >Author Last Name:</label>		  	
+		  	<input type="text" id="authorLastName" ><br><br>
+		  	<label >Publisher Name:</label>
+		  	<input type="text" id="publisherName" ><br><br>
+		  	<label >Publisher Address:</label>
+		  	<input type="text" id="publisherAddress"><br><br>
+		  	<button type = "button" onclick="addbook()"> Update Loan</button>
+		</form>
+		<p id="addBookRes">
+		</p>
+	</div>
+</body>
+</html>

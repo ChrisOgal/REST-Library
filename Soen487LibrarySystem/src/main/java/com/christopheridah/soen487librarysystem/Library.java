@@ -54,7 +54,7 @@ public class Library {
            
             Book potentialBook = new Book(currentBookID, title, description, isbn, author, publisher);
             if (bookTDG != null){
-                bookTDG.insertBook(generateID(), potentialBook);
+                bookTDG.insertBook(potentialBook);
             }
             else{
                 throw new FailedDbConnException();
@@ -81,9 +81,7 @@ public class Library {
                 
     }
     
-    
-    
-    public void updateBook(int bookID, String title, String description, String ISBN, Author author, String publisherName) throws InvalidAuthorException, InvalidPublisherException, FailedDbConnException, OtherDbException   {
+    public void updateBook(int bookID, String title, String description, String ISBN, Author author, Publisher publisher) throws InvalidAuthorException, InvalidPublisherException, FailedDbConnException, OtherDbException, BookNotFoundException   {
         if(bookTDG != null){
                    
             if(title == null || title.equals("")){
@@ -102,46 +100,38 @@ public class Library {
                 author = null;
             }
             
-            bookTDG.updateBook(bookID, title, description, ISBN, author, publisherName);
-
-            if(publisherName == null || publisherName.equals("")){
-                publisherName = null;
-            }
+            if(bookTDG.updateBook(bookID, title, description, ISBN, author, publisher) == 0){
+                throw new BookNotFoundException();
+            };
+            
         }
         else{
             throw new FailedDbConnException();
         }
-        
-          
     }
-
-
+    
     public void deleteBook(int id) throws BookNotFoundException , OtherDbException, FailedDbConnException{
   
        if(bookTDG != null){ 
-            bookTDG.deleteBook(id);
+            if(bookTDG.deleteBook(id) ==0){
+                throw new BookNotFoundException();
+            };
        }
        else{
            throw new FailedDbConnException();
        }
     }
     
-   /*
-    private boolean bookExists(int id) throws SQLException{
-        
-        Book book = bookTDG.getBook(id);
-        return true;        
-    }*/
- 
-    
-    private int generateID(){
-        int id = currentBookID;
-        
-        id = currentBookID + 1;  
-        return id;
-    }
-    
+      
     public String testString(){
         return "Test String";
+    }
+    
+    public List<Book> getAllBooks() throws OtherDbException, FailedDbConnException{
+        if(bookTDG != null){
+            return bookTDG.getAllBooks();
+        }else{
+           throw new FailedDbConnException(); 
+        }
     }
 }

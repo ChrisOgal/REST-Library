@@ -75,21 +75,26 @@ public class BookDataGateway {
     }
     
     
-    public void insertBook(int bookId, Book book) throws InvalidAuthorException , OtherDbException, InvalidPublisherException{
-      try{
+    public void insertBook(Book book) throws InvalidAuthorException , OtherDbException, InvalidPublisherException{
+        
+        
+        try{
+        int id = generateID();
         String insertStatement = "INSERT INTO Book VALUES (?,?,?,?,?,?,?);";
+        System.out.println("Inserting book into Table with id: " + id);
         PreparedStatement ps = conn.prepareStatement(insertStatement);
-        ps.setInt(1, book.getId());
+        ps.setInt(1, id);
         ps.setString(2, book.getDescription());
         ps.setString(3, book.getIsbn());
         ps.setString(4, book.getAuthor().getFirstName());
         ps.setString(5, book.getAuthor().getLastName());
-        ps.setString(6, book.getTitle());
-        ps.setString(7 , book.getPublisher().getName());      
+        ps.setString(7, book.getTitle());
+        ps.setString(6 , book.getPublisher().getName());      
         ps.executeUpdate(); 
         }catch(SQLException e){
             if (e.getClass().getName().equals("java.sql.SQLIntegrityConstraintViolationException")){
                 if(e.getMessage().indexOf("Author") != -1){
+                    System.out.println(e.getMessage());
                     throw new InvalidAuthorException();
                 }
                 else if(e.getMessage().indexOf("Publisher") != -1){
@@ -98,14 +103,14 @@ public class BookDataGateway {
                 }
             }
             else{
-                e.printStackTrace();
+                System.out.println(e.getMessage());
                 throw new OtherDbException();
             }
         }
     };
          
    
-    public int updateBook(int bookID, String title, String description, String ISBN, Author author, String publisherName) throws InvalidAuthorException , OtherDbException, InvalidPublisherException{
+    public int updateBook(int bookID, String title, String description, String ISBN, Author author, Publisher publisher) throws InvalidAuthorException , OtherDbException, InvalidPublisherException{
         
         String updateStatement = "UPDATE Book Set \n";
         
@@ -119,12 +124,13 @@ public class BookDataGateway {
             updateStatement += "AuthorFirstName  = \"" + author.getFirstName() + "\",";
             updateStatement += "AuthorLastName  = \"" + author.getLastName() + "\",";        
         }
-        if(publisherName != null ){
-            updateStatement += "Publisher = \"" + publisherName + "\",";
+        if(publisher != null ){
+            updateStatement += "Publisher = \"" + publisher.getName()+ "\",";
         }
         if(title != null && !title.equals("")){
             updateStatement += "Title = \"" + title + "\",";
         }
+        
         
         updateStatement = updateStatement.substring(0, updateStatement.length() - 1);
         
@@ -159,6 +165,44 @@ public class BookDataGateway {
           throw new OtherDbException();
         }
     }
+    
+    public ArrayList<Book> getAllBooks() throws OtherDbException{
+        ArrayList<Book> bookList = new ArrayList<Book>();
+        String statement = "Select * From Book";
+        try{
+            PreparedStatement ps = conn.prepareStatement(statement);
+            ResultSet rset = ps.executeQuery();
+            while(rset.next()){
+                Author auth = new Author(rset.getString("AuthorFirstName"), rset.getString("AuthorLastName"));
+                Publisher publisher = new Publisher();
+                publisher.setName(rset.getString("Publisher"));
+                Book book = new Book(rset.getInt("BookId"),
+                        rset.getString("Title"),
+                        rset.getString("Description"),
+                        rset.getString("ISBN"),
+                        auth,
+                        publisher);
+                bookList.add(book);
+            }
+            return bookList;
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+            throw new OtherDbException();
+        }
+    }
+    
+    private int generateID() throws SQLException{
+        String lastID = "Select MAX(bookId) from Loan";
+
+        PreparedStatement ps = conn.prepareStatement(lastID);
+
+        ResultSet rset = ps.executeQuery();
         
-           
+        if(rset.next()){
+            return rset.getInt(1) + 1;
+        }
+        else{
+            return 0;
+        }
+    }
 }

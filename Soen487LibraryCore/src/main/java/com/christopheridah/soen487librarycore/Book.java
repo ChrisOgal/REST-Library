@@ -6,6 +6,7 @@
 package com.christopheridah.soen487librarycore;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  *
@@ -39,7 +40,8 @@ public class Book {
         this.author = new Author(author , "");
         this.publisher = new Publisher(publisher , "");
     }
-
+     
+    @XmlElement(name = "id") 
     public int getId() {
         return id;
     }
@@ -47,7 +49,8 @@ public class Book {
     public void setId(int id) {
         this.id = id;
     }
-
+    
+    @XmlElement(name = "title")
     public String getTitle() {
         return title;
     }
@@ -56,6 +59,7 @@ public class Book {
         this.title = title;
     }
 
+    @XmlElement(name = "description")
     public String getDescription() {
         return description;
     }
@@ -63,7 +67,8 @@ public class Book {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
+    @XmlElement(name = "isbn")
     public String getIsbn() {
         return isbn;
     }
@@ -71,7 +76,8 @@ public class Book {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
-
+    
+    @XmlElement(name = "author")
     public Author getAuthor() {
         return author;
     }
@@ -80,6 +86,7 @@ public class Book {
         this.author = author;
     }
 
+    @XmlElement(name = "publisher")
     public Publisher getPublisher() {
         return publisher;
     }
